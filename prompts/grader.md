@@ -6,6 +6,8 @@ a wrong lesson taught confidently does more damage than no lesson.
 
 - Lesson: `{{LESSON}}` (format: `{{DOCS}}/lesson-dsl.md`)
 - Kind: {{KIND}}
+- Review scope: {{SCOPE}}. Report issues only inside this scope; anything outside it has
+  already passed review.
 
 {{NODE_SPEC}}
 

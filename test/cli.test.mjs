@@ -56,6 +56,17 @@ test('validate-lesson exits non-zero with errors', () => {
   assert.equal(lp('validate-lesson', FIXTURE).out.ok, true);
 });
 
+test('prompt --set KEY=@file reads the value from a file', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'lp-'));
+  const graph = join(dir, 'graph.json');
+  const feedback = join(dir, 'grade.json');
+  writeFileSync(graph, JSON.stringify(sampleGraph()));
+  writeFileSync(feedback, '{"verdict":"revise","issues":[{"problem":"join! is not a future"}]}\n');
+  const r = lp('prompt', 'lesson', '--graph', graph, '--node', 'b', '--set', `FEEDBACK=@${feedback}`, '--set', 'OUT=/x.json', '--set', 'RESEARCH=/r.json', '--set', 'BRIEF=b');
+  assert.equal(r.code, 0);
+  assert.match(r.out.prompt, /join! is not a future/);
+});
+
 test('unknown command is a JSON error', () => {
   const r = lp('nope');
   assert.equal(r.code, 1);

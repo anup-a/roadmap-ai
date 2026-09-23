@@ -11,6 +11,7 @@ import { checkCitations, curlFetch, htmlToText, snippets } from '../lib/citation
 import * as L from '../lib/learner.mjs';
 import { mergeResearch } from '../lib/research.mjs';
 import { renderPrompt } from '../lib/prompts.mjs';
+import { prepareGate, scoreGate } from '../lib/gate.mjs';
 
 const REPEATABLE = new Set(['missed', 'known', 'unknown', 'warmup', 'set']);
 
@@ -79,7 +80,7 @@ function learnerCommand(sub, f) {
       need(f, 'graph', 'node', 'score');
       const missed = (f.missed ?? []).map(String).filter(Boolean);
       const result = L.recordGate(readJson(f.graph), learner, f.node, { score: Number(f.score), missed });
-      return save(result.learner, { passed: result.passed, stale: result.stale, pass_mark: L.passMark(learner.profile.mode) });
+      return save(result.learner, { passed: result.passed, stale: result.stale, patch: result.patch, pass_mark: L.passMark(learner.profile.mode) });
     }
     case 'lesson':
       need(f, 'key', 'kind', 'artifact', 'url');
@@ -150,7 +151,9 @@ async function main([command, ...rest]) {
         (f.set ?? []).map((kv) => {
           const at = String(kv).indexOf('=');
           if (at < 1) throw new Error(`--set expects KEY=VALUE, got "${kv}"`);
-          return [kv.slice(0, at), kv.slice(at + 1)];
+          const value = kv.slice(at + 1);
+          // KEY=@path reads the value from a file, e.g. grader feedback JSON.
+          return [kv.slice(0, at), value.startsWith('@') ? readFileSync(value.slice(1), 'utf8').trim() : value];
         }),
       );
       const prompt = renderPrompt(positional[0], {
@@ -170,6 +173,21 @@ async function main([command, ...rest]) {
         return { ok: true, out: f.out, chars: prompt.length };
       }
       return { ok: true, prompt };
+    }
+    case 'gate': {
+      const [sub, file] = positional;
+      if (sub === 'prepare') {
+        const gate = prepareGate(readJson(file), { seed: file });
+        writeJson(file, gate);
+        const ask = gate.questions.map((q) => ({ q: q.q, code: q.code ?? null, lang: q.lang ?? null, options: q.options.map((o) => o.text) }));
+        return { ok: true, questions: ask };
+      }
+      if (sub === 'score') {
+        need(f, 'answers');
+        const answers = String(f.answers).split(',').map((s) => Number(s.trim()));
+        return { ok: true, ...scoreGate(readJson(file), answers) };
+      }
+      throw new Error('usage: lp gate prepare <gate.json> | lp gate score <gate.json> --answers 0,2,1,3');
     }
     case 'merge-research': {
       need(f, 'topic', 'out');

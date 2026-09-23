@@ -83,15 +83,19 @@ Republish **the same directory** after every state change so the map URL never c
 
 1. If `current` isn't `in_progress`, run `lp learner start --graph $G --learner $LR --node <current>`.
 2. For **each** item in `generate`, run this pipeline. Items are independent, so run them in
-   parallel:
+   parallel. An item with `reason: "patch"` was written before a gate the learner passed with
+   misses. Don't rewrite it: dispatch `lp prompt patch … --warmup <plan.warmup> --set OUT=<existing lesson json>`,
+   run the checks, then grade with `--set "SCOPE=block 1 (the warmup) only"`, and republish
+   with `--warmup`. Every other reason goes through the full pipeline:
    - **Write.** `lp prompt lesson --graph $G --research $RS --learner $LR --node <node> --kind <kind> [--warmup <ids>] --set OUT=$R/lessons/<key>.json --out $R/prompts/<key>.md`,
      then dispatch a general-purpose agent with that prompt. Pass `--warmup` for `lesson` items
      only, never for remedial ones.
    - **Check it yourself.** Run `lp validate-lesson … [--warmup …]` and `lp check-cites …`.
      Don't trust the agent's report.
    - **Grade.** Dispatch a **different** agent with `lp prompt grader … --set LESSON=<lesson path>`.
-     On `revise`, send the issues JSON back as `FEEDBACK` (`--set "FEEDBACK=<json>"`) to a new
-     writer and grade again. Allow at most 2 revisions. If blockers remain after that, **don't
+     Save its JSON to `$R/grades/<key>-<n>.json`. On `revise`, rebuild the writer prompt with
+     `--set FEEDBACK=@$R/grades/<key>-<n>.json` and dispatch a new writer, which edits the
+     existing lesson file. Then check and grade again. Allow at most 2 revisions. If blockers remain after that, **don't
      publish**: tell the learner the lesson failed review and show the issues.
    - **Publish.**
      ```bash
@@ -108,15 +112,18 @@ Republish **the same directory** after every state change so the map URL never c
 
 1. First read the lesson's comments (step 7) so no question goes unanswered.
 2. One agent writes the gate: `lp prompt gate --graph $G --learner $LR --node <node> --set LESSON=<lesson json> --set OUT=$R/gates/<node>-<n>.json --out …`
-3. Ask the questions with AskUserQuestion (4 per call, options in the given order). Show
-   `explain` after each answer.
-4. Score = correct / total. `missed` = the `misconception` label of every wrong option chosen,
-   plus `"objective not shown: <objective>"` for any objective with no correct answer.
+3. `lp gate prepare $R/gates/<node>-<n>.json` shuffles the options in place (writers put the
+   right answer first far too often) and prints the questions **without** the key. Ask them
+   with AskUserQuestion, 4 per call, options in the printed order. A free-text "Other" reply
+   counts as `-1`.
+4. `lp gate score $R/gates/<node>-<n>.json --answers 2,0,1,3` returns `score`, `missed` and
+   each question's `explain`. Show the explanations, then record the result:
    ```bash
-   lp learner gate --graph $G --learner $LR --node <node> --score 0.75 --missed "<label>" --missed "<label>"
+   lp learner gate --graph $G --learner $LR --node <node> --score <score> --missed "<label>" --missed "<label>"
    ```
 5. **Pass**: say so in one line, then go back to step 5. The next lesson is usually prefetched
-   already; if the gate had misses, `stale` lists lessons that `plan` will now regenerate.
+   already. If the gate had misses, `patch` lists prefetched lessons whose warmup `plan` will
+   now retarget at those misses; a clean pass needs no change.
    **Fail**: say what was missed in plain words, without scolding, then go back to step 5.
    `plan` will now ask for a remedial micro-lesson (`<node>~remedial-<n>`) and regenerate stale
    prefetched lessons. After the remedial lesson, gate again with fresh questions.

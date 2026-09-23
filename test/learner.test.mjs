@@ -83,6 +83,34 @@ test('failing a gate records misconceptions and marks prefetched lessons stale',
   assert.equal(learner.misconceptions[0].text, 'thinks poll blocks');
 });
 
+test('passing with misses marks prefetched lessons for a warmup patch, not a rewrite', () => {
+  const g = sampleGraph();
+  let l = startNode(g, fresh(), 'a');
+  l = recordLesson(l, 'a', { kind: 'lesson', artifact: 'x1', url: 'u1' });
+  l = recordLesson(l, 'b', { kind: 'lesson', artifact: 'x2', url: 'u2' });
+  const { learner, passed, stale, patch } = recordGate(g, l, 'a', { score: 0.75, missed: ['m1'] });
+  assert.equal(passed, true);
+  assert.deepEqual(stale, []);
+  assert.deepEqual(patch, ['b']);
+  assert.equal(learner.lessons.b.stale, false);
+  assert.equal(learner.lessons.b.patch, true);
+  assert.deepEqual(
+    learner.misconceptions.map((m) => [m.text, m.resolved]),
+    [['m1', false]],
+    'a pass does not resolve what was missed on that same gate',
+  );
+  const text = brief(g, learner, 'b', { warmup: ['a'] });
+  assert.match(text, /Gate attempts on a[\s\S]*score 0.75; missed: m1/);
+
+  const p = plan(g, learner);
+  assert.equal(p.current, 'b');
+  assert.deepEqual(p.generate.map((x) => [x.key, x.reason]), [['b', 'patch'], ['c', 'missing']]);
+  assert.deepEqual(p.warmup, ['a']);
+  const patched = recordLesson(learner, 'b', { kind: 'lesson', artifact: 'x2', url: 'u2', warmup: ['a'] });
+  assert.equal(patched.lessons.b.patch, false);
+  assert.deepEqual(plan(g, patched).generate.map((x) => x.key), ['c']);
+});
+
 test('gate on a node that is not in progress is refused', () => {
   assert.throws(() => recordGate(sampleGraph(), fresh(), 'a', { score: 1, missed: [] }), /in progress/);
 });

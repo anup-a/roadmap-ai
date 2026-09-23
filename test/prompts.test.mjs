@@ -15,7 +15,7 @@ test('every shipped prompt fills from graph, learner and a few --set values', ()
   const learner = createLearner({ graph, run: 'r', profile: { goal: 'g', mode: 'exam', background: 'b', style: 's', deadline: null, minutes_per_day: 15 } });
   const base = { graph, graphPath: '/g.json', research, researchPath: '/r.json', learner, node: 'b', warmup: ['a'] };
   const set = { OUT: '/out.json', LESSON: '/l.json', FOCUS: 'sources' };
-  for (const name of ['research', 'graph', 'diagnostic', 'lesson', 'grader', 'gate']) {
+  for (const name of ['research', 'graph', 'diagnostic', 'lesson', 'grader', 'gate', 'patch']) {
     const text = renderPrompt(name, { ...base, set });
     assert.doesNotMatch(text, /\{\{/, name);
   }
