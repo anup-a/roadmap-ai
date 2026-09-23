@@ -80,6 +80,14 @@ test('too short a lesson fails the depth rule', () => {
   assert.equal(result.errors.length, 1);
 });
 
+test('clarifications added from learner questions do not count toward the length cap', () => {
+  const lesson = fixture();
+  const long = { type: 'clarification', question: 'why?', md: 'word '.repeat(2400) };
+  const result = validateLesson(withBlocks(lesson, [...lesson.blocks, long]));
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.stats.clarification_words, 2401, 'the 2400-word answer plus the one-word question');
+});
+
 test('warmup is required first when review nodes are due', () => {
   const lesson = fixture();
   const noWarmup = withBlocks(lesson, lesson.blocks.filter((b) => b.type !== 'warmup'));
