@@ -121,17 +121,19 @@ and rewrites the next one around what you got wrong.
 Plan the whole path once. Write lessons only when they're needed, so each one can use what the learner just got wrong.
 
 ```mermaid
-flowchart LR
-  R["Research (3 agents, cached per topic)"] --> G[Skill graph]
-  G --> I[Interview] --> D[Diagnostic quiz] --> M[Live skill map]
-  M --> W[Write lesson]
-  W --> V[Validate + check quotes] --> Q[Grader agent]
+flowchart TD
+  R["🔎 Research: 3 agents, cached per topic"] --> G["🗺️ Skill graph"]
+  G --> I["💬 Interview + diagnostic quiz"]
+  I --> M["Live skill map"]
+  M --> W["✍️ Write the next lesson"]
+  W --> V["✅ Validate + check every quote"]
+  V --> Q{"🧑‍⚖️ Grader agent"}
   Q -- revise --> W
-  Q -- pass --> P[Publish]
-  P --> T{Mastery gate}
+  Q -- pass --> P["📄 Publish"]
+  P --> T{"🎯 Mastery gate"}
   T -- pass --> M
-  T -- pass with misses --> PW[Patch next lesson's warm-up] --> M
-  T -- fail --> RL[Review lesson] --> T
+  T -- "pass with misses" --> PW["Patch the next lesson's warm-up"] --> M
+  T -- fail --> RL["Review lesson from a new angle"] --> T
 ```
 
 - **The path is planned up front, lessons are not.** Only the current lesson and one prefetched lesson exist at a time. Most learners stop early, and a lesson written on day 0 can't know what happened on day 3.
