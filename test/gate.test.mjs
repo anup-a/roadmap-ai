@@ -39,6 +39,16 @@ test('scoreGate computes score, misconceptions picked and objectives not shown',
   assert.equal(r.results[1].explain, 'why o1');
 });
 
+test('scoreGate lists a misconception once even when two questions catch it', () => {
+  const same = (objective) => ({
+    ...q(objective),
+    options: q(objective).options.map((o) => (o.correct ? o : { ...o, misconception: 'thinks join! is parallel' })),
+  });
+  const g = { node: 'x', questions: [same('o1'), same('o2')] };
+  const wrongs = g.questions.map((x) => x.options.findIndex((o) => !o.correct));
+  assert.deepEqual(scoreGate(g, wrongs).missed, ['thinks join! is parallel', 'objective not shown: o1', 'objective not shown: o2']);
+});
+
 test('scoreGate rejects a wrong number of answers or out-of-range choices', () => {
   assert.throws(() => scoreGate(gate, [0]), /4 answers/);
   assert.throws(() => scoreGate(gate, [0, 0, 0, 9]), /question 4/);
