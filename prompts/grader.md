@@ -17,7 +17,7 @@ Check each of these:
 
 1. **Truth.** Every factual sentence, cited or not. For each `[sN]`, does the quote actually
    support the sentence citing it, or just sit near the topic? Check pages with
-   `node {{LP}} source <url> --find "<phrase>"`. Don't use WebFetch.
+   `node {{LP}} source <url> --find "<phrase>"`. Don't use a web tool that summarises pages.
 2. **Code.** Would each listing compile and behave as the text says? Check API names, imports,
    editions and output claims. For a `predict` block, is the stated answer really what
    happens?

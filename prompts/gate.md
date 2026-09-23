@@ -18,7 +18,7 @@ content. Ask about new situations that need the same understanding.
   label can go straight into the learner model if they pick it.
 - Keep each question under 300 characters. Put code in `code`, at most 10 lines.
 
-Write JSON to `{{OUT}}` with the Write tool:
+Write JSON to `{{OUT}}`:
 
 ```json
 { "node": "{{NODE}}",

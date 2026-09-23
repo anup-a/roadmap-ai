@@ -17,7 +17,7 @@ rate themselves badly, so test them; don't ask.
 - Wrong options should be misconceptions from the graph, not obvious filler.
 - Keep each question under 250 characters. Put code in `code`, at most 8 lines.
 
-Write JSON to `{{OUT}}` with the Write tool:
+Write JSON to `{{OUT}}`:
 
 ```json
 { "questions": [

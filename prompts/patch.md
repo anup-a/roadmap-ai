@@ -18,7 +18,7 @@ What to do:
   lesson already declares, or add a new source with a quote copied verbatim via
   `node {{LP}} source <url> --find "<phrase>"`.
 
-Edit `{{OUT}}` with the Edit tool, then run these until both print `"ok": true`:
+Edit `{{OUT}}` in place, then run these until both print `"ok": true`:
 
 ```bash
 node {{LP}} validate-lesson {{OUT}} {{WARMUP_FLAGS}}

@@ -21,8 +21,8 @@ Rules:
 - Every URL must be live and https. Check it with
   `node {{LP}} source <url> --find "<a phrase you expect>"`. A result of `ok: false` or an error
   means the page is wrong or unreachable; replace it.
-- Do not use WebFetch to check pages. It summarises, and this pipeline needs raw text.
-- Write only JSON to `{{OUT}}`, using the Write tool:
+- Do not check pages with a web tool that summarises them. This pipeline needs raw text.
+- Write only JSON to `{{OUT}}`:
 
 ```json
 { "focus": "{{FOCUS}}",

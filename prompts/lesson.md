@@ -52,11 +52,11 @@ Mark factual claims with `[sN]`. For each source:
 3. Copy the quote **character for character** from the `matches` output. Never write a quote
    from memory: a checker fetches the page, and a paraphrase fails.
 
-Never use WebFetch for quotes. It returns a summary, not the page.
+Never take quotes from a web tool that summarises pages. You need the page's own words.
 
 ## Finish line
 
-Write the lesson to `{{OUT}}` with the Write tool, then run:
+Write the lesson to `{{OUT}}`, then run:
 
 ```bash
 node {{LP}} validate-lesson {{OUT}} {{WARMUP_FLAGS}}

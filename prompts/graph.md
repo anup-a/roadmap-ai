@@ -23,6 +23,6 @@ How to cut nodes:
 Research ids: number `research.sources` as `r1`, `r2`, … in the order they appear in the file.
 The orchestrator has already done this in `{{RESEARCH}}`.
 
-Write the graph to `{{OUT}}` with the Write tool, then run
+Write the graph to `{{OUT}}`, then run
 `node {{LP}} validate-graph {{OUT}} --research {{RESEARCH}}` and fix the graph until `ok` is
 true. Reply with the node count and the ids in order.
