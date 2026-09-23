@@ -24,11 +24,29 @@ research (3 agents, cached per topic) → skill graph → interview → diagnost
 - **Pages publish to byagent.** Line comments on a lesson become questions the skill answers in
   the thread and records in the learner model.
 
-## Use
+## Install
 
-Installed as a skill via a symlink: `~/.claude/skills/learnpath -> this repo`. Say "teach me
-async Rust" or run `/learnpath`. State lives in `~/.learnpath` (override with
-`LEARNPATH_HOME`).
+It's a [Claude Code](https://claude.com/claude-code) skill. Clone it into your skills folder,
+then say "teach me async Rust" or run `/learnpath`:
+
+```bash
+git clone https://github.com/anup-a/roadmap-ai ~/.claude/skills/learnpath
+```
+
+Needs Node 20+ and `curl`. Pages are published with [byagent](https://byagent.dev)
+(`npx byagent login`). State lives in `~/.learnpath` (override with `LEARNPATH_HOME`).
+
+## See it
+
+A dogfood run on async Rust, with a simulated TypeScript developer as the learner:
+
+- [Skill map](https://byagent.dev/a/k2PhXJlzTVm1/): 20 nodes, updated as the learner progresses
+- [Lesson: join!](https://byagent.dev/a/z9dobDiDFY9r/): warmup rewritten after a gate miss, plus a
+  clarification added from a comment on the page
+- [Remedial lesson](https://byagent.dev/a/N47iG3fJ6mW2/) written after a failed gate
+- [learnpath vs plain chat](https://byagent.dev/a/RXgcRdQxy8K3/): same lesson, same grader.
+  Plain chat was as accurate on the first try; the pipeline's edge is adapting to the learner,
+  at about 8x the cost per lesson
 
 ## Develop
 
