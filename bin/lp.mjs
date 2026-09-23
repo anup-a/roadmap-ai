@@ -12,7 +12,7 @@ import * as L from '../lib/learner.mjs';
 import { mergeResearch } from '../lib/research.mjs';
 import { renderPrompt } from '../lib/prompts.mjs';
 
-const REPEATABLE = new Set(['missed', 'known', 'warmup', 'set']);
+const REPEATABLE = new Set(['missed', 'known', 'unknown', 'warmup', 'set']);
 
 function parseArgs(argv) {
   const positional = [];
@@ -65,9 +65,13 @@ function learnerCommand(sub, f) {
   }
   const learner = readJson(f.learner);
   switch (sub) {
-    case 'diagnostic':
+    case 'diagnostic': {
       need(f, 'graph');
-      return save(L.applyDiagnostic(readJson(f.graph), learner, ids(f.known)));
+      const graph = readJson(f.graph);
+      const answers = { known: ids(f.known), unknown: ids(f.unknown) };
+      const { credited, discounted } = L.creditDiagnostic(graph, answers);
+      return save(L.applyDiagnostic(graph, learner, answers.known, { unknown: answers.unknown }), { credited, discounted });
+    }
     case 'start':
       need(f, 'graph', 'node');
       return save(L.startNode(readJson(f.graph), learner, f.node));

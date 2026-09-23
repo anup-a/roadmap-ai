@@ -4,6 +4,7 @@ import { sampleGraph } from './graph.test.mjs';
 import {
   createLearner,
   applyDiagnostic,
+  creditDiagnostic,
   startNode,
   recordGate,
   recordLesson,
@@ -28,6 +29,15 @@ test('diagnostic marks known nodes and their ancestors mastered, and unlocks dep
   assert.equal(l.nodes.b.state, 'mastered');
   assert.equal(l.nodes.c.state, 'ready');
   assert.equal(l.nodes.d.state, 'locked');
+});
+
+test('a correct answer is discounted when an ancestor was answered wrong', () => {
+  // d depends on b and c; b was failed directly, so getting d right was a guess.
+  const { credited, discounted } = creditDiagnostic(sampleGraph(), { known: ['a', 'd'], unknown: ['b'] });
+  assert.deepEqual(credited, ['a']);
+  assert.deepEqual(discounted, ['d']);
+  const l = applyDiagnostic(sampleGraph(), fresh(), ['a', 'd'], { unknown: ['b'] });
+  assert.deepEqual(states(l), { a: 'mastered', b: 'ready', c: 'ready', d: 'locked', e: 'locked', f: 'locked' });
 });
 
 test('updates never mutate the input learner', () => {

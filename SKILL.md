@@ -57,10 +57,14 @@ JSON has `goal mode background style deadline minutes_per_day`.
 2. Ask them yourself with AskUserQuestion, up to 4 per call. Show any `code` inside the
    question text.
 3. A node counts as **known** only if its question was answered correctly. "I don't know",
-   a wrong answer or an "Other" answer means not known. Then run
-   `lp learner diagnostic --graph $G --learner $LR --known a,b` (ancestors of known nodes are
-   filled in automatically).
-4. Tell the learner in one line what was skipped and why.
+   a wrong answer or an "Other" answer makes it **unknown**. Pass both:
+   `lp learner diagnostic --graph $G --learner $LR --known a,b --unknown c,d`. Ancestors of
+   known nodes are filled in, but a right answer whose prerequisite was answered wrong is
+   `discounted`: it was probably a guess or an analogy from another language.
+4. For every **wrong** answer (not "I don't know"), record the belief the chosen option shows:
+   `lp learner misconception --learner $LR --node <node> --text "<belief, in plain words>"`.
+   The first lessons then go straight at those beliefs.
+5. Tell the learner in one line what was skipped and why.
 
 ## 4. Skill map
 
