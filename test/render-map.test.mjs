@@ -80,6 +80,17 @@ test('unsafe lesson urls are not linked', () => {
   assert.ok(!html.includes('javascript:'));
 });
 
+test('up next points at the review lesson first when the current node has one', () => {
+  const html = renderMap(graph, learner, {
+    lessonUrls: { c: 'https://byagent.dev/a/main/' },
+    remedialUrls: { c: 'https://byagent.dev/a/review/' },
+  });
+  const next = html.match(/<p class="next">[\s\S]*?<\/p>/)[0];
+  assert.match(next, /href="https:\/\/byagent.dev\/a\/review\/"[^>]*>Review first/);
+  assert.ok(next.indexOf('a/review/') < next.indexOf('a/main/'), 'review link comes before the main lesson');
+  assert.doesNotMatch(renderMap(graph, learner, { lessonUrls: { c: 'https://byagent.dev/a/main/' } }), /Review first/);
+});
+
 test('legend lists the four states', () => {
   const html = renderMap(graph, learner);
   assert.ok(html.includes('class="legend"'));

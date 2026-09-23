@@ -133,8 +133,15 @@ async function renderMapCommand(f) {
       .filter(([key]) => !key.includes('~'))
       .map(([key, lesson]) => [key, lesson.url]),
   );
+  // Latest review lesson per node; <node>~remedial-<n> keys sort by n.
+  const remedialUrls = Object.fromEntries(
+    Object.entries(learner.lessons)
+      .filter(([key]) => key.includes('~remedial-'))
+      .sort(([a], [b]) => Number(a.split('-').pop()) - Number(b.split('-').pop()))
+      .map(([key, lesson]) => [L.nodeOfKey(key), lesson.url]),
+  );
   mkdirSync(f.out, { recursive: true });
-  writeFileSync(join(f.out, 'index.html'), renderMap(readJson(f.graph), learner, { lessonUrls }));
+  writeFileSync(join(f.out, 'index.html'), renderMap(readJson(f.graph), learner, { lessonUrls, remedialUrls }));
   return { ok: true, out: join(f.out, 'index.html') };
 }
 
