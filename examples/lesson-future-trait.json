@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "topic": "rust-async",
+  "node": "future-trait",
+  "kind": "lesson",
+  "title": "What a Future actually is",
+  "minutes": 12,
+  "objectives": [
+    "Explain what `poll` returns and who calls it",
+    "Predict when the body of an `async fn` starts running"
+  ],
+  "sources": [
+    {
+      "id": "s1",
+      "title": "Asynchronous Programming in Rust: The Future Trait",
+      "url": "https://rust-lang.github.io/async-book/02_execution/02_future.html",
+      "quote": "The Future trait is at the center of asynchronous programming in Rust. A Future is an asynchronous computation that can produce a value"
+    },
+    {
+      "id": "s2",
+      "title": "std::future::Future",
+      "url": "https://doc.rust-lang.org/std/future/trait.Future.html",
+      "quote": "Futures alone are inert; they must be actively polled for the underlying computation to make progress"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "warmup",
+      "from": ["ownership-basics"],
+      "questions": [
+        {
+          "q": "A value is moved into a closure. Can the caller still use it afterwards?",
+          "options": [
+            { "text": "No, ownership moved into the closure", "correct": true, "why": "A `move` transfers ownership; the caller's binding is no longer valid." },
+            { "text": "Yes, closures always borrow", "correct": false, "why": "Closures borrow by default, but `move` (or a by-value use) takes ownership." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "md": "If you come from JavaScript, you already know `async` and `await`. The Rust versions look the same but behave differently in one important way: a Rust future does **nothing** until something asks it to make progress [s2].\n\nA future is a value that represents a computation which will eventually produce a result [s1]. The only thing you can do with it is call `poll`. Each call either finishes the work and returns `Poll::Ready(value)`, or does as much as it can and returns `Poll::Pending`.\n\nWho calls `poll`? Not you. An **executor** such as Tokio calls it. Your code builds futures and hands them to the executor, and the executor decides when each one runs."
+    },
+    {
+      "type": "code",
+      "lang": "rust",
+      "caption": "The trait, simplified. The real signature uses Pin<&mut Self>.",
+      "code": "trait SimpleFuture {\n    type Output;\n    fn poll(&mut self, wake: fn()) -> Poll<Self::Output>;\n}\n\nenum Poll<T> {\n    Ready(T),\n    Pending,\n}",
+      "highlight": [3],
+      "playground": true
+    },
+    {
+      "type": "callout",
+      "tone": "misconception",
+      "title": "\"Calling an async fn starts it\"",
+      "md": "In JavaScript, calling an async function runs its body up to the first `await` straight away. In Rust, calling an `async fn` only **builds** a future. None of the body runs until the future is polled [s2]."
+    },
+    {
+      "type": "stepper",
+      "title": "One trip through poll",
+      "steps": [
+        { "label": "Build", "md": "`let f = fetch_user(42);` creates a future. No network call has happened yet." },
+        { "label": "Hand off", "md": "`tokio::spawn(f)` gives the future to the executor." },
+        { "label": "First poll", "md": "The executor calls `poll`. The socket is not ready, so the future registers a waker and returns `Pending`." },
+        { "label": "Wake", "md": "Data arrives. The waker tells the executor this future can make progress." },
+        { "label": "Second poll", "md": "The executor polls again. The future finishes and returns `Ready(user)`." }
+      ]
+    },
+    {
+      "type": "predict",
+      "prompt": "What does this program print?",
+      "lang": "rust",
+      "code": "async fn hello() { println!(\"hello\"); }\n\nfn main() {\n    let _f = hello();\n    println!(\"done\");\n}",
+      "answer": "Only `done`. `hello()` built a future, but nothing ever polled it, so its body never ran. The compiler even warns that futures do nothing unless awaited."
+    },
+    {
+      "type": "worked_example",
+      "title": "Why the order of output surprises people",
+      "setup": "Two futures are created, then awaited in the opposite order. Which message prints first?",
+      "steps": [
+        { "md": "Create both futures. Neither body has run.", "lang": "rust", "code": "let a = say(\"a\");\nlet b = say(\"b\");" },
+        { "md": "Await `b` first. Awaiting polls it to completion, so `b` prints now.", "lang": "rust", "code": "b.await;" },
+        { "md": "Await `a` second. Only now does `a` run and print.", "lang": "rust", "code": "a.await;" }
+      ],
+      "takeaway": "Output order follows the order of **polling**, not the order of creation."
+    },
+    {
+      "type": "quiz",
+      "questions": [
+        {
+          "q": "An async fn is called but its result is never awaited or spawned. What happens?",
+          "options": [
+            { "text": "Its body never runs", "correct": true, "why": "Futures are inert until polled [s2]." },
+            { "text": "It runs in the background", "correct": false, "why": "That is JavaScript's behaviour. Rust has no implicit background executor." },
+            { "text": "It runs up to the first .await", "correct": false, "why": "Also JavaScript's model. In Rust even the code before the first await waits for a poll." }
+          ]
+        },
+        {
+          "q": "What does poll return when the work cannot finish yet?",
+          "options": [
+            { "text": "Poll::Pending", "correct": true, "why": "Pending means: call me again after the waker fires." },
+            { "text": "None", "correct": false, "why": "poll returns Poll, not Option." },
+            { "text": "It blocks until ready", "correct": false, "why": "Blocking would freeze the executor thread; futures return instead." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "exercise",
+      "prompt": "Change the `main` from the predict step so that `hello` prints. Use Tokio.",
+      "hints": ["You need an executor, and `main` itself must become async.", "Look at the `#[tokio::main]` attribute."],
+      "solution": "Mark `main` with `#[tokio::main]`, make it `async`, and `.await` the future.",
+      "lang": "rust",
+      "solution_code": "#[tokio::main]\nasync fn main() {\n    hello().await;\n    println!(\"done\");\n}"
+    }
+  ]
+}

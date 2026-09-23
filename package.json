@@ -1,0 +1,12 @@
+{
+  "name": "learnpath",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Adaptive learning paths: planned up front, lessons written just in time, published to byagent",
+  "type": "module",
+  "bin": { "lp": "bin/lp.mjs" },
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test test/"
+  }
+}
