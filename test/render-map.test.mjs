@@ -104,9 +104,40 @@ test('progress summary, goal and mode are shown; profile text is escaped', () =>
   assert.ok(html.includes('build'));
 });
 
-test('draws one edge per prerequisite link', () => {
+test('stages sit on one vertical spine, topics alternating left and right', () => {
   const html = renderMap(graph, learner);
-  assert.equal((html.match(/class="edge/g) || []).length, 7);
+  const pills = [...html.matchAll(/<div class="pill[^"]*">Stage (\d+)<\/div>/g)].map((m) => m[1]);
+  assert.deepEqual(pills, ['1', '2', '3', '4', '5']);
+  const stage1 = html.slice(html.indexOf('>Stage 1<'), html.indexOf('>Stage 2<'));
+  assert.match(stage1, /<div class="col l">[\s\S]*data-node="a"[\s\S]*<div class="col r">[\s\S]*data-node="g"/);
+});
+
+test('a stage whose topics are all mastered gets a done pill', () => {
+  const html = renderMap(graph, learner);
+  assert.match(html, /<div class="pill done">Stage 1<\/div>/);
+  assert.match(html, /<div class="pill">Stage 2<\/div>/);
+});
+
+test('the map never needs sideways scrolling: no fixed-width canvas', () => {
+  const html = renderMap(graph, learner);
+  assert.doesNotMatch(html, /class="(scroller|canvas|wires)"/);
+  assert.doesNotMatch(html, /overflow-x/);
+});
+
+test('locked topics name the prerequisites they are still waiting on', () => {
+  const html = renderMap(graph, learner);
+  const d = html.match(/<div class="node[^"]*" data-node="d"[\s\S]*?<\/div>\n/)[0];
+  assert.match(d, /Needs <em>Title c<\/em>/);
+  assert.doesNotMatch(d, /Title b/, 'mastered prereqs are not listed');
+  const f = html.match(/<div class="node[^"]*" data-node="f"[\s\S]*?<\/div>\n/)[0];
+  assert.match(f, /Needs <em>Title e<\/em>/);
+});
+
+test('every prerequisite link is kept on the node for the hover highlight', () => {
+  const html = renderMap(graph, learner);
+  const links = [...html.matchAll(/data-prereqs="([^"]*)"/g)].flatMap((m) => m[1].split(' ').filter(Boolean));
+  assert.equal(links.length, 7);
+  assert.ok(html.includes('data-node="f" data-state="locked" data-prereqs="e g"'));
 });
 
 test('node text from the graph is escaped', () => {
