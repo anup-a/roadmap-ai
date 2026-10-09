@@ -108,6 +108,15 @@ and rewrites the next one around what you got wrong.
 <tr>
 <td colspan="2" valign="top">
 
+**Write and run the code without leaving the lesson.** TypeScript and JavaScript exercises open in an editor with tests. Each run shows which tests pass, what a failing one expected, and your console output. A loop that never ends is stopped after 5 seconds, and your code is saved in the browser. Before a lesson ships, `lp` checks that the reference solution passes every test and that the starter code doesn't.
+
+<img src="docs/images/runner.png" alt="Exercise editor with highlighted TypeScript, Run tests button, and 3 of 5 tests passing with failure messages">
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top">
+
 **Fail a gate and you get a review lesson from a different angle, not the same page again.**
 
 <img src="docs/images/remedial-hero.png" alt="Remedial lesson header" width="100%">

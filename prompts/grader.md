@@ -28,7 +28,10 @@ Check each of these:
 5. **Fit.** Does it match the learner's background, style and daily time? Would they be lost
    or bored anywhere?
 6. **Exercise.** Can it be done using only this lesson and earlier nodes? Is the solution
-   correct?
+   correct? For a runnable exercise (`starter` + `tests`), the validator has already proved
+   the solution passes and the starter fails. Judge the tests: would a plausible wrong answer,
+   especially one built on a listed misconception, still pass? Do failure messages tell the
+   learner what to fix? Is the starter scaffolding (not a disguised answer)?
 
 Severity:
 

@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
 import { validateGraph } from '../lib/graph.mjs';
 import { validateLesson } from '../lib/validate-lesson.mjs';
+import { checkRunnableExercises } from '../lib/runner.mjs';
 import { checkCitations, curlFetch, htmlToText, snippets } from '../lib/citations.mjs';
 import * as L from '../lib/learner.mjs';
 import { mergeResearch } from '../lib/research.mjs';
@@ -207,8 +208,13 @@ async function main([command, ...rest]) {
       const result = validateGraph(readJson(positional[0]), f.research ? readJson(f.research) : null);
       return { ...result };
     }
-    case 'validate-lesson':
-      return validateLesson(readJson(positional[0]), { warmup: ids(f.warmup) });
+    case 'validate-lesson': {
+      const lesson = readJson(positional[0]);
+      const result = validateLesson(lesson, { warmup: ids(f.warmup) });
+      const run = checkRunnableExercises(lesson);
+      const errors = [...result.errors, ...run.errors];
+      return { ...result, ok: errors.length === 0, errors, ...(run.exercises.length ? { exercises: run.exercises } : {}) };
+    }
     case 'check-cites':
       return checkCitations(readJson(positional[0]));
     case 'source': {

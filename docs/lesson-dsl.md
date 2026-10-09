@@ -60,8 +60,51 @@ at least once. **(rule)**
 | `worked_example` | `title`, `setup` (md), `steps: [{ md, code?, lang? }]`, `takeaway` (md) | A fully solved problem, 1 to 8 steps |
 | `predict` | `prompt` (md), `code?`, `lang?`, `answer` (md) | Learner commits to a prediction, then reveals the answer |
 | `quiz` | `questions: [Question]` | Self-check with instant feedback. This is **not** the mastery gate |
-| `exercise` | `prompt` (md), `hints: [md]`, `solution` (md), `solution_code?`, `lang?` | Hands-on task with progressive hints and a hidden solution |
+| `exercise` | `prompt` (md), `hints: [md]`, `solution` (md), `solution_code?`, `lang?`, `starter?`, `tests?` | Hands-on task with progressive hints and a hidden solution. With `starter` + `tests` it becomes a runnable exercise (below) |
 | `clarification` | `question`, `md`, `thread?` | Appended after a learner asks about a line. Never replaces existing text |
+
+### Runnable exercises (TypeScript / JavaScript)
+
+Give an `exercise` a `starter` and `tests` and the page gets an editor, a **Run tests** button
+and a pass/fail line per test, so the learner never leaves the lesson. The code runs in a Web
+Worker that is stopped after 5 seconds; TypeScript types are stripped in the browser first.
+
+```json
+{ "type": "exercise", "lang": "ts",
+  "prompt": "Implement `candidates()` so the tests pass.",
+  "starter": "function candidates(logits: number[]): number[] {\n  // TODO\n  return [];\n}",
+  "tests": "test(\"keeps the top token\", () => {\n  assertEqual(candidates([2, 1])[0], 0);\n});",
+  "solution_code": "function candidates(logits: number[]): number[] { … }",
+  "solution": "Sort by probability, then …",
+  "hints": ["…"] }
+```
+
+- `lang` is `ts` or `js`, and `starter`, `tests` and `solution_code` are all required. **(rule)**
+- No `import`, `export` or `require`: only language built-ins that browsers and Node share
+  (no DOM, `fs`, `fetch` or npm packages). **(rule)**
+- TypeScript must be *erasable*: types, interfaces and `as` casts are fine; `enum`,
+  `namespace` and constructor parameter properties are not.
+- `lp validate-lesson` runs `solution_code` + `tests` in Node and fails unless every test
+  passes, and fails if `starter` + `tests` already pass. **(rule)**
+- Randomness must be seeded (write a small PRNG such as mulberry32 into the starter) so a
+  correct answer passes every time.
+
+`tests` runs after the learner's code, in the same scope, and can use:
+
+| Helper | Checks |
+|---|---|
+| `test(name, fn)` | registers a test; `fn` may be `async` |
+| `assert(cond, msg?)` | `cond` is truthy |
+| `assertEqual(actual, expected, msg?)` | deep equality (arrays, plain objects, `Map`, `Set`) |
+| `assertClose(actual, expected, tol = 1e-6, msg?)` | a number, or an array of numbers, within `tol` |
+| `assertThrows(fn, msg?)` | `fn()` throws |
+
+Name each test after the behaviour it checks ("top-p keeps the smallest set over p"): the name
+is all the learner sees when it passes. A failure shows the assertion message, so pass a `msg`
+that says what was expected in the lesson's terms. `console.log` output is shown too.
+
+Other languages keep the hints + solution flow; Rust `code` blocks can still link to the Rust
+Playground with `playground: true`.
 
 `Question`:
 
@@ -80,7 +123,8 @@ at least once. **(rule)**
 For `kind: "lesson"`:
 
 - at least one `worked_example` **(rule)**
-- at least one `exercise` **(rule)**
+- at least one `exercise` **(rule)**; when the lesson's code is TypeScript or JavaScript, make
+  it runnable
 - at least one `quiz` with 2 or more questions **(rule)**
 - at least 2 sources **(rule)**
 - 350 to 2500 words of explanatory text across `md` fields **(rule)**
