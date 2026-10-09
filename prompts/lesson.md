@@ -29,6 +29,12 @@ as an interactive page, and a separate grader will check it before anyone sees i
 - **Worked example, then exercise.** The worked example solves a problem fully, step by step.
   The exercise asks for something similar but not identical, doable in 5 to 10 minutes with
   only this lesson.
+- **Runnable when the code is TypeScript or JavaScript.** Give the exercise a `starter`
+  (working scaffolding plus `// TODO` where the learner writes code), `tests` and
+  `solution_code`, as the lesson format describes. The learner should finish without leaving
+  the page. Test the objective, not the shape of the answer: a wrong but plausible solution,
+  especially one built on a misconception for this node, must fail a test with a message that
+  says why. Five tests or fewer.
 - **Quizzes have one defensible answer.** Distractors are plausible, and each `why` teaches
   something.
 - **The warmup reviews earlier nodes** with fresh application questions, not copies of old

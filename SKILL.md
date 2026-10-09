@@ -103,7 +103,8 @@ Republish **the same directory** after every state change so the map URL never c
      then dispatch a writer agent with that prompt. Pass `--warmup` for `lesson` items
      only, never for remedial ones.
    - **Check it yourself.** Run `lp validate-lesson … [--warmup …]` and `lp check-cites …`.
-     Don't trust the agent's report.
+     Don't trust the agent's report. For a runnable exercise, `validate-lesson` also runs the
+     solution and the starter against the tests (TypeScript needs Node 22.6+).
    - **Grade.** Dispatch a **different** agent with `lp prompt grader … --set LESSON=<lesson path>`.
      Save its JSON to `$R/grades/<key>-<n>.json`. On `revise`, rebuild the writer prompt with
      `--set FEEDBACK=@$R/grades/<key>-<n>.json` and dispatch a new writer, which edits the
