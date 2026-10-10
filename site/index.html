@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>roadmap-ai · an AI tutor for any coding agent</title>
+<meta name="description" content="roadmap-ai plans your whole learning path up front, writes each lesson just before you need it, and rewrites the next one around what you got wrong.">
+<meta property="og:title" content="roadmap-ai">
+<meta property="og:description" content="An AI tutor for any coding agent. Planned up front, lessons written just in time, adapted to your mistakes.">
+<meta property="og:image" content="images/map-light.png">
+<meta name="theme-color" content="#EDF1F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E131A" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232F45C8'/%3E%3Cpath d='M9 23V9m0 14h14' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='15' cy='17' r='2.4' fill='%23F2CF3A'/%3E%3Ccircle cx='21' cy='11' r='2.4' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#">roadmap<span>-ai</span></a>
+    <nav aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#agents">For agents</a>
+      <a class="gh" href="https://github.com/anup-a/roadmap-ai">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Agent skill · Node 20+ · zero dependencies</p>
+    <h1>An AI tutor for <mark>any coding agent</mark>.</h1>
+    <p class="lede">It plans your whole learning path up front, writes each lesson just before you need it, and rewrites the next one around what you got wrong.</p>
+    <div class="cta">
+      <a class="btn primary" href="#install">Install the skill</a>
+      <a class="btn" href="https://byagent.dev/a/k2PhXJlzTVm1/">See a live path →</a>
+    </div>
+    <div class="cmd" role="group" aria-label="Install command">
+      <code id="install-cmd">npx skills add anup-a/roadmap-ai -g -a '*'</code>
+      <button type="button" class="copy" data-copy="install-cmd">Copy</button>
+    </div>
+    <figure class="shot hero-shot">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="images/map-dark.png">
+        <img src="images/map-light.png" alt="Skill map for Async Rust: 20 topics in prerequisite stages, marked mastered, in progress, ready and locked" width="2880" height="1880">
+      </picture>
+      <figcaption>A real skill map from the first run, updated after every quiz. <a href="https://byagent.dev/a/k2PhXJlzTVm1/">Open it live</a>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="why">
+  <div class="wrap">
+    <p class="eyebrow">Why</p>
+    <h2>Roadmaps don't adapt. Chatbots forget.</h2>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th scope="col"></th><th scope="col">Static roadmaps</th><th scope="col">Asking a chatbot</th><th scope="col" class="us">roadmap-ai</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Whole path visible up front</th><td class="y">Yes</td><td class="n">No</td><td class="y us">Yes</td></tr>
+          <tr><th scope="row">Starts from what you already know</th><td class="n">No</td><td class="m">If you explain</td><td class="y us">Tested, not self-rated</td></tr>
+          <tr><th scope="row">Mastery is checked, not assumed</th><td class="n">No</td><td class="n">No</td><td class="y us">Quiz gate per topic</td></tr>
+          <tr><th scope="row">Next lesson adapts to your mistakes</th><td class="n">No</td><td class="n">Forgets</td><td class="y us">Yes</td></tr>
+          <tr><th scope="row">Ask about any line, answered in place</th><td class="n">No</td><td class="m">In a separate chat</td><td class="y us">Yes</td></tr>
+          <tr><th scope="row">Claims backed by quotes checked on the live page</th><td class="n">No</td><td class="n">No</td><td class="y us">Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features">
+  <div class="wrap">
+    <p class="eyebrow">What a learner gets</p>
+    <h2>Short lessons that know what you got wrong.</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Short, interactive lessons</h3>
+        <p>Written for your background and style, with objectives up front and an honest reading time.</p>
+        <img src="images/lesson-hero.png" alt="Lesson header with objectives and a predict-the-output exercise" loading="lazy">
+      </article>
+      <article class="card">
+        <h3>Warm-ups aimed at your last mistakes</h3>
+        <p>Passed the last gate but missed how <code>#[tokio::main]</code> works? The next lesson opens on exactly that.</p>
+        <img src="images/warmup-answered.png" alt="Warm-up question answered wrong, showing why and the right answer" loading="lazy">
+      </article>
+      <article class="card">
+        <h3>Predict before you're told</h3>
+        <p>Commit to a guess, then reveal. The answer speaks to the belief you probably brought with you.</p>
+        <img src="images/predict.png" alt="Predict block with a typed guess and the revealed answer" loading="lazy">
+      </article>
+      <article class="card">
+        <h3>Ask about any line</h3>
+        <p>Highlight a sentence and ask. The answer lands right under that line, and the misconception it reveals shapes the next lesson.</p>
+        <img src="images/clarification.png" alt="Clarification block answering the learner's question in place" loading="lazy">
+      </article>
+      <article class="card">
+        <h3>Step through how it really works</h3>
+        <p>Steppers walk through the mechanism one state at a time.</p>
+        <img src="images/stepper.png" alt="Stepper showing step 3 of 4 of how join! polls two futures" loading="lazy">
+      </article>
+      <article class="card">
+        <h3>Every quote checked on the live page</h3>
+        <p>A paraphrase fails the check. Only exact quotes ship.</p>
+        <img src="images/sources.png" alt="Numbered sources, each with a verbatim quote" loading="lazy">
+      </article>
+      <article class="card wide">
+        <div>
+          <h3>Write and run code without leaving the lesson</h3>
+          <p>TypeScript and JavaScript exercises open in an editor with tests. Each run shows which tests pass, what a failing one expected, and your console output. Infinite loops stop after 5 seconds, and your code is saved in the browser. Before a lesson ships, <code>lp</code> checks that the reference solution passes every test and the starter code doesn't.</p>
+        </div>
+        <img src="images/runner.png" alt="Exercise editor with TypeScript, a Run tests button, and 3 of 5 tests passing" loading="lazy">
+      </article>
+      <article class="card wide">
+        <div>
+          <h3>Fail a gate, get a different angle</h3>
+          <p>A failed mastery gate gives you a review lesson that explains it a new way, not the same page again.</p>
+        </div>
+        <img src="images/remedial-hero.png" alt="Review lesson header" loading="lazy">
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="how">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2>Plan the whole path once. Write lessons only when they're needed.</h2>
+    <ol class="flow">
+      <li><b>Research</b><span>Three agents, cached per topic and shared by every learner.</span></li>
+      <li><b>Skill graph</b><span>Topics in prerequisite stages.</span></li>
+      <li><b>Interview + diagnostic</b><span>Finds what you already know. A lucky guess doesn't count if a prerequisite was wrong.</span></li>
+      <li><b>Write the next lesson</b><span>Built from the learner model: mastery, misconceptions, questions asked.</span></li>
+      <li><b>Validate + grade</b><span>Code checks every quote. A separate grader agent compiles the examples.</span></li>
+      <li><b>Mastery gate</b><span>Pass → next topic. Pass with misses → patch the next warm-up. Fail → review lesson.</span></li>
+    </ol>
+    <div class="points">
+      <div><h3>The path is planned, lessons are not</h3><p>Only the current lesson and one prefetched lesson exist at a time. A lesson written on day 0 can't know what happened on day 3.</p></div>
+      <div><h3>Lessons are JSON, not HTML</h3><p>Writer agents fill a <a href="https://github.com/anup-a/roadmap-ai/blob/main/docs/lesson-dsl.md">small lesson format</a>. Pages are built from tested widgets, so a model can't ship broken markup.</p></div>
+      <div><h3>Two kinds of checking</h3><p>Code proves each quote is really on its page. A grader agent judges whether each claim is true.</p></div>
+      <div><h3>An explicit learner model</h3><p><a href="https://github.com/anup-a/roadmap-ai/blob/main/docs/data-model.md"><code>learner.json</code></a> holds mastery per topic, gate attempts, open misconceptions and questions asked.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install" class="install">
+  <div class="wrap">
+    <p class="eyebrow">Install</p>
+    <h2>One command, every agent on your machine.</h2>
+    <pre><code>npx skills add anup-a/roadmap-ai -g -a '*'</code></pre>
+    <p>Or clone it into one agent's skills folder:</p>
+    <pre><code>git clone https://github.com/anup-a/roadmap-ai ~/.claude/skills/learnpath   # Claude Code
+git clone https://github.com/anup-a/roadmap-ai ~/.codex/skills/learnpath    # Codex
+git clone https://github.com/anup-a/roadmap-ai ~/.agents/skills/learnpath   # shared folder</code></pre>
+    <p class="ask">Then ask your agent: <strong>“teach me async Rust”</strong> <span>(or <code>/learnpath</code> where slash commands exist)</span></p>
+    <p class="req"><b>Requirements</b> Node 20+ and <code>curl</code>. No npm install. Pages publish to <a href="https://byagent.dev">byagent</a> (<code>npx byagent login</code> once), or render to self-contained HTML. State lives in <code>~/.learnpath</code>.</p>
+  </div>
+</section>
+
+<section id="agents" class="agents">
+  <div class="wrap">
+    <p class="eyebrow">For agents</p>
+    <h2>Your agent does the thinking. <code>lp</code> does the bookkeeping.</h2>
+    <p class="sub">Any agent that can run shell commands and write files can drive it. The full loop has run in Claude Code. Codex found the skill on its own and drove <code>lp</code> using only <a href="https://github.com/anup-a/roadmap-ai/blob/main/SKILL.md"><code>SKILL.md</code></a>.</p>
+    <div class="two">
+      <ul class="rules">
+        <li><b><code>lp</code> is the only way state changes.</b> Every command prints one JSON object and exits 1 on failure.</li>
+        <li><b><code>lp prompt &lt;name&gt;</code> builds sub-agent prompts</b> from the graph and learner model, and refuses to print one with an unfilled placeholder.</li>
+        <li><b>Check writers' work yourself.</b> Run <code>lp validate-lesson</code> and <code>lp check-cites</code> after every writer.</li>
+      </ul>
+      <pre class="term"><code><span class="c"># what to write next, and why</span>
+lp plan --graph "$G" --learner "$L"
+lp prompt lesson --node future-trait \
+   --set OUT=lesson.json --out prompt.md
+lp validate-lesson lesson.json
+lp check-cites lesson.json
+lp render-lesson lesson.json --out site/future-trait
+lp gate score gate.json --answers 2,0,1,3</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="learned">
+  <div class="wrap">
+    <p class="eyebrow">What the first run taught us</p>
+    <h2>Every check caught something real.</h2>
+    <div class="caught">
+      <article><b>Grader agent</b><p>A real Rust Book quote about <code>trpl::join</code> was cited for <code>tokio::join!</code>. The quote check passed; the compiler didn't. The grader now compiles code.</p></article>
+      <article><b>Diagnostic</b><p>A lucky guess from JavaScript intuition would have skipped 5 topics. Right answers now need their prerequisites right too.</p></article>
+      <article><b>Gate</b><p>The gate writer put every correct answer first. <code>lp gate prepare</code> now shuffles options.</p></article>
+      <article><b>Adaptation</b><p>One miss triggered a rewrite of a 2,000-word lesson. A pass with misses now patches only the warm-up.</p></article>
+    </div>
+    <p class="honest">Compared with plain chat on the same lesson, plain chat was just as accurate on its first try, at about an eighth of the cost. roadmap-ai's edge is the gates, the learner model and the in-place answers. <a href="https://byagent.dev/a/RXgcRdQxy8K3/">Read the write-up</a>.</p>
+    <p class="live"><span class="eyebrow">Live pages</span>
+      <a href="https://byagent.dev/a/k2PhXJlzTVm1/">Skill map</a>
+      <a href="https://byagent.dev/a/jH7LnIKAIP4f/">Lesson 1</a>
+      <a href="https://byagent.dev/a/z9dobDiDFY9r/">Lesson 2, adapted</a>
+      <a href="https://byagent.dev/a/N47iG3fJ6mW2/">Review lesson</a>
+      <a href="https://byagent.dev/a/fbMQjjnEDHTf/">Plain-chat version</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <a class="brand" href="#">roadmap<span>-ai</span></a>
+    <p><a href="https://github.com/anup-a/roadmap-ai">GitHub</a> · <a href="https://github.com/anup-a/roadmap-ai/blob/main/SKILL.md">SKILL.md</a> · <a href="https://github.com/anup-a/roadmap-ai/blob/main/docs/lesson-dsl.md">Lesson format</a> · <a href="https://github.com/anup-a/roadmap-ai/blob/main/docs/data-model.md">Data model</a></p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = document.getElementById(btn.dataset.copy).textContent;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+    });
+  });
+});
+</script>
+</body>
+</html>
