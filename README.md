@@ -12,6 +12,7 @@ and rewrites the next one around what you got wrong.
 [![Dependencies](https://img.shields.io/badge/dependencies-0-1F6E4B)](package.json)
 [![Tests](https://img.shields.io/badge/tests-121_passing-1F6E4B)](test/)
 
+[**Website**](https://anup-a.github.io/roadmap-ai/) ·
 [**See a live path**](https://byagent.dev/a/k2PhXJlzTVm1/) ·
 [Install](#-install) ·
 [For agents](#-for-agents) ·
@@ -271,4 +272,5 @@ bin/lp.mjs          the CLI: state, checks, prompts, rendering
 lib/                learner model, graph, gate, citations, validators, renderers
 prompts/            sub-agent prompts, filled by `lp prompt`
 docs/               lesson format and data model
+site/               the GitHub Pages site (deployed by .github/workflows/pages.yml)
 ```
